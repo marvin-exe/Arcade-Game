@@ -47,11 +47,39 @@ Player.prototype.reset = function(){
   this.speed = 90;
 };
 
+Player.prototype.handleInput = function(buttonPress){
+  if (buttonPress == "left"){
+    this.x -= this.speed;
+    if (this.x < 2){
+      this.x = 2;
+    }
+  }
+  else if (buttonPress == "right"){
+    this.x += this.speed;
+    if (this.x > 400) {
+      this.y = 410;
+    }
+  }
+  else if (buttonPress == "up"){
+    this.y -= this.speed;
+    if (this.y <= (25)){
+      winGame();
+      return;
+    }
+  }
+  else if (buttonPress = "up") {
+    this.y += this.speed;
+    if (this.y >410){
+      this.y = 410;
+    }
+  }
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 let allEnemies = [];
-let player = [];
+let player = new player(0, 0, 0);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
