@@ -14,8 +14,12 @@ Enemy.prototype.update = function(dt) {
   this.crashCheck();
 };
 
+// check if player crashes into bug
 Enemy.prototype.crashCheck = function() {
-  // check if player crashes into bug
+  if (player.x + 26 <= this.x + 90 && player.x + 77 >= this.x + 10 && player.y + 130 >= this.y + 92 && player.y + 72 <= this.y + 132) {
+    document.getElementById("crashed").innerHTML = ++deaths;
+    restartGame();
+  }
 };
 
 // Draw the enemy on the screen, required method for game
