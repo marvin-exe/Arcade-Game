@@ -1,123 +1,109 @@
+"use strict";
 // Enemies our player must avoid
-var Enemy = function(x, y, speed) {
-  this.x = x;
-  this.y = y;
-  this.speed = speed;
-  this.sprite = "images/enemy-bug.png";
+var Enemy = function(xcor, ycor, speed) {
+    this.sprite = 'images/enemy-bug.png';
+    this.xcor = xcor;
+    this.ycor = ycor;
+    this.speed = speed;
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-  this.x += this.speed * dt;
-  this.x = this.x > 500 ? 0 : this.x;
-  this.crashCheck();
-};
-
-// check if player crashes into bug
-Enemy.prototype.crashCheck = function() {
-  if (player.x + 26 <= this.x + 90 && player.x + 77 >= this.x + 10 && player.y + 130 >= this.y + 92 && player.y + 72 <= this.y + 132) {
-    document.getElementById("crashed").innerHTML = ++deaths;
-    restartGame();
-  }
+    this.xcor += this.speed*dt;
+    this.xcor = this.xcor>500?0:this.xcor;
+    this.crashCheck();
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.xcor, this.ycor);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-let Player = function(x, y, speed){
-  this.x = x;
-  this.y = y;
-  this.speed = speed;
-  this.sprite = "images/char-boy.png"
-}
-
-Player.prototype.update = function(xUpdate, yUpdate){
-  // player coordinates update
-}
-
-Player.prototype.render = function(){
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+Enemy.prototype.crashCheck = function() {
+    if (player.xcor + 26 <= this.xcor + 90 && player.xcor + 77 >= this.xcor + 10 && player.ycor + 130 >= this.ycor + 92 && player.ycor + 72 <= this.ycor + 132) {
+        document.getElementById("deaths").innerHTML = ++deaths;
+        restartGame();
+    }
 };
 
-Player.prototype.reset = function(){
-  this.x = 200;
-  this.y = 410;
-  this.speed = 90;
+var Player = function(xcor, ycor, speed) {
+    this.xcor = xcor;
+    this.ycor = ycor;
+    this.speed = speed;
+    this.sprite = 'images/char-boy.png';
+};
+Player.prototype.update = function(xcorNew, ycorNew) {
+
+};
+Player.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.xcor, this.ycor);
+};
+Player.prototype.reset = function() {
+    this.xcor = 200;
+    this.ycor = 410;
+    this.speed = 90;
+};
+Player.prototype.handleInput = function(keypressed) {
+    if (keypressed == 'left') {
+        this.xcor -= this.speed;
+        if (this.xcor < 2) {
+            this.xcor = 2;
+        }
+    }
+    else if (keypressed == 'right') {
+        this.xcor += this.speed;
+        if (this.xcor > 400) {
+            this.xcor = 400;
+        }
+    }
+    else if (keypressed == 'up') {
+        this.ycor -= this.speed;
+        if (this.ycor <= (25)) {
+            winGame();
+            return;
+        }
+    }
+    else if (keypressed == 'down') {
+        this.ycor += this.speed;
+        if (this.ycor > 410) {
+            this.ycor = 410;
+        }
+    }
 };
 
-Player.prototype.handleInput = function(buttonPress){
-  if (buttonPress == "left"){
-    this.x -= this.speed;
-    if (this.x < 2){
-      this.x = 2;
-    }
-  }
-  else if (buttonPress == "right"){
-    this.x += this.speed;
-    if (this.x > 400) {
-      this.y = 410;
-    }
-  }
-  else if (buttonPress == "up"){
-    this.y -= this.speed;
-    if (this.y <= (25)){
-      winGame();
-      return;
-    }
-  }
-  else if (buttonPress = "down") {
-    this.y += this.speed;
-    if (this.y >410){
-      this.y = 410;
-    }
-  }
-};
+var allEnemies = [];
+var player = new Player(0, 0, 0);// values doesn't matter, change in reset function
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-let allEnemies = [];
-let player = new Player(0, 0, 0);
+document.addEventListener('keyup', function(e) {
+    var allowedKeys = {
+        37: 'left',
+        38: 'up',
+        39: 'right',
+        40: 'down'
+    };
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
-document.addEventListener("keyup", function(e) {
-  var allowedKeys = {
-    37: "left",
-    38: "up",
-    39: "right",
-    40: "down"
-  };
-
-  player.handleInput(allowedKeys[e.keyCode]);
+    player.handleInput(allowedKeys[e.keyCode]);
 });
 
+function winGame() {
+    player.reset();
+    score += 1;
+    document.getElementById("score").innerHTML = score;
+    var probability = parseInt(Math.random()*10);
+    if (probability < 5 && allEnemies.length < 5) {
+        allEnemies.push(new Enemy(0,40 + Math.random()*100,40 + Math.random()*100));
+    }
+}
+
 function restartGame() {
-  player.reset();
-  allEnemies = [];
-  allEnemies.push(
-    new Enemy(0, 40 + Math.random()*100,40 + Math.random()*100)
-    new Enemy(0, 60 + Math.random()*100,60 + Math.random()*100)
-    new Enemy(0, 50 + Math.random()*130,70 + Math.random()*100)
-  )
+    player.reset();
+    allEnemies = [];
+    allEnemies.push(
+        new Enemy(0,40 + Math.random()*100,40 + Math.random()*100),
+        new Enemy(0,60 + Math.random()*100,60 + Math.random()*100),
+        new Enemy(5,50 + Math.random()*130,70 + Math.random()*100)
+        );
 }
 
-function winGame(){
-  player.reset();
-  score += 1;
-  document.getElementById("score").innerHTML = score;
-  let probability = parseInt(Math.random()*10);
-  if (probability < 5 && allEnemies.length < 5) {
-    allEnemies.push(new Enemy(0,40 + Math.random()*100,40 + Math.random()*100));
-  }
-}
-
-let score = 0;
-let deaths = 0;
+var score = 0;
+var deaths = 0;
 restartGame();
