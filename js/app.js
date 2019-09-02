@@ -71,7 +71,7 @@ Player.prototype.handleInput = function(buttonPress){
       return;
     }
   }
-  else if (buttonPress = "up") {
+  else if (buttonPress = "down") {
     this.y += this.speed;
     if (this.y >410){
       this.y = 410;
@@ -83,7 +83,7 @@ Player.prototype.handleInput = function(buttonPress){
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 let allEnemies = [];
-let player = new player(0, 0, 0);
+let player = new Player(0, 0, 0);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -106,6 +106,16 @@ function restartGame() {
     new Enemy(0, 60 + Math.random()*100,60 + Math.random()*100)
     new Enemy(0, 50 + Math.random()*130,70 + Math.random()*100)
   )
+}
+
+function winGame(){
+  player.reset();
+  score += 1;
+  document.getElementById("score").innerHTML = score;
+  let probability = parseInt(Math.random()*10);
+  if (probability < 5 && allEnemies.length < 5) {
+    allEnemies.push(new Enemy(0,40 + Math.random()*100,40 + Math.random()*100));
+  }
 }
 
 let score = 0;
