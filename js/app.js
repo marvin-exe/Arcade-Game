@@ -18,6 +18,7 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.xcor, this.ycor);
 };
 
+// Checks enemy collision with player
 Enemy.prototype.crashCheck = function() {
     if (player.xcor + 26 <= this.xcor + 90 && player.xcor + 77 >= this.xcor + 10 && player.ycor + 130 >= this.ycor + 92 && player.ycor + 72 <= this.ycor + 132) {
         document.getElementById("deaths").innerHTML = ++deaths;
@@ -25,6 +26,7 @@ Enemy.prototype.crashCheck = function() {
     }
 };
 
+// Player class
 var Player = function(xcor, ycor, speed) {
     this.xcor = xcor;
     this.ycor = ycor;
@@ -42,6 +44,7 @@ Player.prototype.reset = function() {
     this.ycor = 410;
     this.speed = 90;
 };
+// Player controls
 Player.prototype.handleInput = function(keypressed) {
     if (keypressed == 'left') {
         this.xcor -= this.speed;
@@ -71,7 +74,7 @@ Player.prototype.handleInput = function(keypressed) {
 };
 
 var allEnemies = [];
-var player = new Player(0, 0, 0);// values doesn't matter, change in reset function
+var player = new Player(0, 0, 0);
 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
